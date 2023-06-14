@@ -13,5 +13,9 @@ namespace eShopSolution.ApiIntegration
         Task<List<OrderInforVm>> GetAll(string languageId);
 
         Task<OrderInforVm> GetOrderById(int orderId, string languageId);
+
+        Task<bool> UpdateOrderStatus(int id);
+
+        Task<bool> CancelOrderStatus(int id);
     }
 }

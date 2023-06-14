@@ -70,5 +70,40 @@ namespace eShopSolution.ApiIntegration
             var data = GetAsync<OrderInforVm>($"api/orders/{orderId}/{languageId}");
             return data;
         }
+
+        public async Task<bool> UpdateOrderStatus(int id)
+        {
+            var sessions = _httpContextAccessor
+                             .HttpContext
+                             .Session
+                             .GetString(SystemConstants.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var json = JsonConvert.SerializeObject(id);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PatchAsync($"/api/orders/updateOrderStatus/{id}", httpContent);
+            if (response.IsSuccessStatusCode)
+                return true;
+            return false;
+        }
+
+        public async Task<bool> CancelOrderStatus(int id)
+        {
+            var sessions = _httpContextAccessor
+                            .HttpContext
+                            .Session
+                            .GetString(SystemConstants.AppSettings.Token);
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var json = JsonConvert.SerializeObject(id);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PatchAsync($"/api/orders/cancelOrderStatus/{id}", httpContent);
+            if (response.IsSuccessStatusCode)
+                return true;
+            return false;
+        }
     }
 }

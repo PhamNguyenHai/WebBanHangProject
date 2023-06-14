@@ -51,5 +51,23 @@ namespace eShopSolution.BackendApi.Controllers
                 return NotFound();
             return Ok(order);
         }
+
+        [HttpPatch("updateOrderStatus/{id}")]
+        public async Task<IActionResult> UpdateOrderStatus(int id)
+        {
+            var result = await _orderService.UpdateOrderStatus(id);
+            if (result.IsSuccessed)
+                return Ok();
+            return BadRequest("Không huỷ được đơn hàng");
+        }
+
+        [HttpPatch("cancelOrderStatus/{id}")]
+        public async Task<IActionResult> CancelOrderStatus(int id)
+        {
+            var result = await _orderService.CancelOrderStatus(id);
+            if (result.IsSuccessed)
+                return Ok();
+            return BadRequest("Không huỷ được đơn hàng");
+        }
     }
 }

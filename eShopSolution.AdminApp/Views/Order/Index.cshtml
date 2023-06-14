@@ -1,4 +1,5 @@
 ﻿@model List<eShopSolution.ViewModels.Sales.OrderInforVm>
+@using eShopSolution.ViewModels.Utilities.Enums;
 
 @{
     ViewData["Title"] = "Index";
@@ -14,38 +15,127 @@
                 Tên người nhận
             </th>
             <th>
+                Thời gian đặt
+            </th>
+            <th>
                 Địa chỉ
             </th>
             <th>
-                Email
+                Số điện thoại
             </th>
             <th>
-                Số điện thoại
+                Tổng tiền
+            </th>
+            <th>
+                Trạng thái đơn hàng
+            </th>
+            <th>
+                Xử lý đơn hàng
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Chi tiết đơn", "Details", new {  Id=item.Id  }) |
-                @Html.ActionLink("Hủy đơn hàng", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @{
+                        string orderDate = item.OrderDate.Day.ToString() + "/" + item.OrderDate.Month.ToString() + "/" + item.OrderDate.Year.ToString();
+                    }
+                    @orderDate
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @{
+                        decimal totalAmount = 0;
+                        foreach (var orderDetail in item.OrderDetails)
+                        {
+                            totalAmount += orderDetail.Price * orderDetail.Quantity;
+                        }
+                        @totalAmount
+                    }
+                </td>
+                @{
+                    var status = "";
+                    var statusEnum = (int)item.Status;
+                    switch (statusEnum)
+                    {
+                        case 0:
+                            status = "Đang chờ duyệt";
+                            break;
+                        case 1:
+                            status = "Đã duyệt";
+                            break;
+                        case 2:
+                            status = "Đang giao";
+                            break;
+                        case 3:
+                            status = "Đã giao";
+                            break;
+                        case 4:
+                            status = "Đã huỷ";
+                            break;
+                        default:
+                            status = "...";
+                            break;
+                    }
+                }
+                <td> @status </td>
+                <td>
+                    @if (item.Status == (OrderStatus)0)
+                    {
+                        <button class="btn btn-primary" onclick="updateOrderStatus(@item.Id)">Duyệt đơn</button>
+                        <button class="btn btn-danger" onclick="cancelOrderStatus(@item.Id)">Hủy đơn</button>
+                    }
+                    else if (item.Status == (OrderStatus)1)
+                    {
+                        <button class="btn btn-success" onclick="updateOrderStatus(@item.Id)">Giao hàng</button>
+                        <button class="btn btn-danger" onclick="cancelOrderStatus(@item.Id)">Hủy đơn</button>
+                    }
+                    else if (item.Status == (OrderStatus)2)
+                    {
+                        <button class="btn btn-info" onclick="updateOrderStatus(@item.Id)">Xác nhận đã giao hàng</button>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Xem chi tiết", "Details", new { Id = item.Id })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        function updateOrderStatus(orderId) {
+            $.post('/Order/UpdateOrderStatus', { Id: orderId }, function (data) {
+                if (data.success) {
+                    alert("Cập nhật trạng thái đơn hàng thành công");
+                    location.reload();
+                } else {
+                    alert("Cập nhật trạng thái đơn hàng không thành công");
+                }
+            });
+        }
+
+        function cancelOrderStatus(orderId) {
+            $.post('/Order/CancelOrderStatus', { Id: orderId }, function (data) {
+                if (data.success) {
+                    alert("Huỷ đơn hàng thành công");
+                    location.reload();
+                } else {
+                    alert("Huỷ đơn hàng không thành công");
+                }
+            });
+        }
+    </script>
+}

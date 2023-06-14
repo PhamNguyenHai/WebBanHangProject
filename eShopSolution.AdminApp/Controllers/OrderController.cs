@@ -3,6 +3,7 @@ using eShopSolution.Utilities.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace eShopSolution.AdminApp.Controllers
 {
@@ -30,6 +31,20 @@ namespace eShopSolution.AdminApp.Controllers
             var languageId = HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
             var order = _orderApiClient.GetOrderById(Id, languageId).Result;
             return View(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrderStatus(int Id)
+        {
+            var result = await _orderApiClient.UpdateOrderStatus(Id);
+            return Json(new { success = result });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelOrderStatus(int Id)
+        {
+            var result = await _orderApiClient.CancelOrderStatus(Id);
+            return Json(new { success = result });
         }
     }
 }

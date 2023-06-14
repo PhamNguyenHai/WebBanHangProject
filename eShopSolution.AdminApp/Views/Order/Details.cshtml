@@ -8,6 +8,32 @@
 
 <div style="padding: 20px 0 0 20px">
     <h3>Thông tin đơn hàng</h3>
+    @{
+        var status = "";
+        var statusEnum = (int)Model.Status;
+        switch (statusEnum)
+        {
+            case 0:
+                status = "Đang chờ duyệt";
+                break;
+            case 1:
+                status = "Đã duyệt";
+                break;
+            case 2:
+                status = "Đang giao";
+                break;
+            case 3:
+                status = "Đã giao";
+                break;
+            case 4:
+                status = "Đã huỷ";
+                break;
+            default:
+                status = "...";
+                break;
+        }
+    }
+    <h5 style="color: orangered;">Trạng thái đơn hàng : @status</h5>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -21,6 +47,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Thời gian đặt :
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderDate)
         </dd>
         <dt class = "col-sm-2">
             Địa chỉ nhận hàng : 
@@ -52,10 +84,13 @@
                         Tên sản phẩm
                     </th>
                     <th>
-                        Giá
+                        Đơn giá
                     </th>
                     <th>
                         Số lượng mua
+                    </th>
+                    <th>
+                        Thành tiền
                     </th>
                 </tr>
             </thead>
@@ -75,10 +110,20 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Quantity)
                         </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Total)
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
+        @{decimal totalAmount = 0;
+            foreach (var orderDetail in Model.OrderDetails)
+            {
+                totalAmount += orderDetail.Price * orderDetail.Quantity;
+            }
+        }
+        <h6>Tổng tiền : @totalAmount</h6>
 </div>
 <div>
     <a asp-action="Index">Trở về danh sách đơn hàng</a>
