@@ -12,11 +12,7 @@
     <li><a href="index.html">Home</a> <span class="divider">/</span></li>
     <li class="active">Products Name</li>
 </ul>
-<h3> @Model.Category.Name <small class="pull-right"> 40 <localize>available products</localize> </small></h3>
-<hr class="soft" />
-<p>
-    Mô tả của ứng dụng (hard)
-</p>
+<h3> @Model.Category.Name </h3>
 <hr class="soft" />
 <form class="form-horizontal span6">
     <div class="control-group">
@@ -57,9 +53,6 @@
                 <div class="span3 alignR">
                     <form class="form-horizontal qtyFrm">
                         <h3> @item.Price.ToString("C", culture)</h3>
-                        <label class="checkbox">
-                            <input type="checkbox">  Adds product to compair
-                        </label><br />
 
                         <a href="product_details.html" class="btn btn-large btn-primary"> <localize>Add to</localize> <i class=" icon-shopping-cart"></i></a>
                         <a href="product_details.html" class="btn btn-large"><i class="icon-zoom-in"></i></a>

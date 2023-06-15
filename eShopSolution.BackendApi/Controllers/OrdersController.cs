@@ -22,6 +22,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllOrder(string languageId)
         {
             var result = await _orderService.GetAll(languageId);
@@ -29,6 +30,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Create(CheckoutRequest request)
         {
             if (!ModelState.IsValid)
@@ -44,6 +46,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpGet("{orderId}/{languageId}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int orderId, string languageId)
         {
             var order = await _orderService.GetOrderById(orderId, languageId);
@@ -53,6 +56,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPatch("updateOrderStatus/{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateOrderStatus(int id)
         {
             var result = await _orderService.UpdateOrderStatus(id);
@@ -62,6 +66,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPatch("cancelOrderStatus/{id}")]
+        [Authorize]
         public async Task<IActionResult> CancelOrderStatus(int id)
         {
             var result = await _orderService.CancelOrderStatus(id);
